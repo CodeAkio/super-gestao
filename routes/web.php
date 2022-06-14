@@ -4,6 +4,7 @@ use App\Http\Controllers\ContatoController;
 use App\Http\Controllers\FornecedorController;
 use App\Http\Controllers\PrincipalController;
 use App\Http\Controllers\SobreNosController;
+use App\Http\Middleware\LogAcessoMiddleware;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [PrincipalController::class, 'principal'])->name('site.index');
+Route::get('/', [PrincipalController::class, 'principal'])->name('site.index')->middleware('log.acesso');
 
 Route::get('/sobre-nos', [SobreNosController::class, 'sobreNos'])->name('site.sobrenos');
 
@@ -28,7 +29,7 @@ Route::get('/login', function () {
     return 'login';
 })->name('site.login');
 
-Route::prefix('/app')->group(function () {
+Route::middleware('autenticacao:padrao,visitante')->prefix('/app')->group(function () {
     Route::get('/clientes', function () {
         return 'clientes';
     })->name('app.clientes');
